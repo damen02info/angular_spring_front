@@ -10,8 +10,12 @@ export class ProductoService {
   private urlBase = "http://localhost:8080/api/productos";
   private clienteHttp = inject(HttpClient);
 
-  obtenerProductosLista():Observable<Producto[]>{
+  obtenerProductosLista(): Observable<Producto[]> {
     return this.clienteHttp.get<Producto[]>(this.urlBase);
+  }
+
+  agregarProducto(producto: Producto): Observable<Object> {
+    return this.clienteHttp.post(this.urlBase, producto);
   }
 
 }

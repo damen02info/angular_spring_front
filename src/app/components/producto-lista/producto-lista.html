@@ -3,7 +3,7 @@
         <h3>Sistema de inventarios</h3>
     </div>
 
-    <p>Productos: {{ productos.length }}</p>
+    <p>Productos: {{ productos().length }}</p>
 
     <table class="table table-striped table-hover align-middle">
         <thead>
@@ -15,7 +15,7 @@
             </tr>
         </thead>
         <tbody>
-        @for (producto of productos; track producto.idProducto) {
+        @for (producto of productos(); track producto.idProducto) {
         <tr>
             <th scope="row">{{ producto.idProducto }}</th>
             <td>{{ producto.descripcion }}</td>

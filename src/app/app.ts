@@ -1,11 +1,10 @@
 import { Component, signal } from '@angular/core';
-import { ProductoLista } from './components/producto-lista/producto-lista';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [ProductoLista],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  imports: [RouterModule],
+  templateUrl: './app.html'
 })
 export class App {
   protected readonly title = signal('angular_spring_front');
