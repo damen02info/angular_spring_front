@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { Producto } from '../../models/producto';
 import { ProductoService } from '../../services/producto.service';
 import { CommonModule } from '@angular/common';
@@ -12,17 +12,38 @@ import { Router } from '@angular/router';
   templateUrl: './producto-lista.html',
 })
 
-export class ProductoLista {
+export class ProductoLista implements OnInit {
   private readonly productoServicio = inject(ProductoService);
-  private enrutador = inject(Router)
+  private enrutador = inject(Router);
 
-  // toSignal gestiona la suscripción, la desuscripción y la reactividad por ti.
-  // Se ejecuta inmediatamente al instanciar la clase.
-  public productos = toSignal(this.productoServicio.obtenerProductosLista(), {
-    initialValue: []
-  });
+  // 1. Usamos un signal normal (RW) en lugar de toSignal
+  public productos = signal<Producto[]>([]);
+
+  ngOnInit() {
+    this.cargarProductos();
+  }
+
+  // 2. Encapsulamos la carga en un método reutilizable
+  cargarProductos() {
+    this.productoServicio.obtenerProductosLista().subscribe({
+      next: (data) => this.productos.set(data),
+      error: (err) => console.error('Error al cargar:', err)
+    });
+  }
 
   editarProducto(id: number) {
     this.enrutador.navigate(['/editar-producto', id]);
+  }
+
+  eliminarProducto(id: number) {
+    if (confirm('¿Estás seguro?')) {
+      this.productoServicio.eliminarProducto(id).subscribe({
+        next: () => {
+          // 3. Simplemente volvemos a llamar a la carga
+          this.cargarProductos();
+        },
+        error: (err) => console.error('Error al eliminar:', err)
+      });
+    }
   }
 }
